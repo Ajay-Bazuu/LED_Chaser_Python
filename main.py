@@ -9,20 +9,23 @@ DATA_PIN = 12  # GPIO pin connected to the data line of the LED strip (D6 on ESP
 # Initialize the NeoPixel object
 np = neopixel.NeoPixel(machine.Pin(DATA_PIN), NUM_LEDS)
 
-def set_all_leds(color):
-    for i in range(NUM_LEDS):
-        np[i] = color  # Set each LED to the given color
-    np.write()  # Send the data to the LED strip
+def snake_pattern():
+    for start in range(NUM_LEDS - 3):  # We stop 3 LEDs before the end since we're lighting 4 at a time
+        print(f"Lighting LEDs from {start} to {start + 3}")
+
+        # Set the next 4 LEDs to green
+        for i in range(NUM_LEDS):
+            if start <= i < start + 4:
+                np[i] = (0, 255, 0)  # Set to green (RGB: 0, 255, 0)
+            else:
+                np[i] = (0, 0, 0)  # Turn off the LED
+        
+        np.write()  # Send the data to the LED strip
+        time.sleep(0.5)  # Adjust the delay for animation speed
 
 def main():
     while True:
-        print("Turning all LEDs green")
-        set_all_leds((0, 255, 0))  # Set all LEDs to green (RGB: 0, 255, 0)
-        time.sleep(5)  # Wait for 5 seconds
-
-        print("Turning off all LEDs")
-        set_all_leds((0, 0, 0))  # Turn off all LEDs
-        time.sleep(2)  # Wait for 2 seconds
+        snake_pattern()
 
 # Run the main loop
 main()
